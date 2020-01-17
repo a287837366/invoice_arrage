@@ -7,8 +7,9 @@
     <x:Property Name="dt_invoice_item" Type="InArgument(sd:DataTable)" />
     <x:Property Name="invoice_item_array" Type="InArgument(s:String[])" />
     <x:Property Name="dic_invoice_item" Type="InArgument(scg:Dictionary(x:String, x:String))" />
+    <x:Property Name="out_passing_success" Type="OutArgument(x:Boolean)" />
   </x:Members>
-  <sap:VirtualizedContainerService.HintSize>710,2190</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>717,1034</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>ActivityBuilder_1</sap2010:WorkflowViewState.IdRef>
   <mva:VisualBasic.Settings>Assembly references and imported namespaces for internal implementation</mva:VisualBasic.Settings>
   <TextExpression.NamespacesForImplementation>
@@ -41,7 +42,7 @@
       <AssemblyReference>System.Xml</AssemblyReference>
     </scg:List>
   </TextExpression.ReferencesForImplementation>
-  <Sequence DisplayName="解析JSON" sap:VirtualizedContainerService.HintSize="690,2130" sap2010:WorkflowViewState.IdRef="Sequence_4">
+  <Sequence sap2010:Annotation.AnnotationText="1.解析一张" DisplayName="解析JSON" sap:VirtualizedContainerService.HintSize="697,974" sap2010:WorkflowViewState.IdRef="Sequence_4">
     <Sequence.Variables>
       <Variable x:TypeArguments="njl:JObject" Name="l_json_item" />
       <Variable x:TypeArguments="sd:DataRow" Name="dr_invoice" />
@@ -51,248 +52,287 @@
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:DeserializeJson x:TypeArguments="njl:JObject" DisplayName="反序列化 JSON" sap:VirtualizedContainerService.HintSize="648,61" sap2010:WorkflowViewState.IdRef="DeserializeJson`1_2" JsonObject="[l_json_item]" JsonString="[in_json_item]" />
-    <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="648,61" sap2010:WorkflowViewState.IdRef="Assign_3">
-      <Assign.To>
-        <OutArgument x:TypeArguments="sd:DataRow">[dr_invoice]</OutArgument>
-      </Assign.To>
-      <Assign.Value>
-        <InArgument x:TypeArguments="sd:DataRow">[dt_invoice_main.NewRow]</InArgument>
-      </Assign.Value>
-    </Assign>
-    <While DisplayName="循环 渲染 发票基本项目" sap:VirtualizedContainerService.HintSize="648,53" sap2010:WorkflowViewState.IdRef="While_1">
-      <sap:WorkflowViewStateService.ViewState>
-        <scg:Dictionary x:TypeArguments="x:String, x:Object">
-          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
-          <x:Boolean x:Key="IsPinned">False</x:Boolean>
-        </scg:Dictionary>
-      </sap:WorkflowViewStateService.ViewState>
-      <While.Condition>[loop_count &lt; dt_invoice_main.Columns.Count]</While.Condition>
-      <Sequence DisplayName="序列" sap:VirtualizedContainerService.HintSize="305,254" sap2010:WorkflowViewState.IdRef="Sequence_9">
-        <sap:WorkflowViewStateService.ViewState>
-          <scg:Dictionary x:TypeArguments="x:String, x:Object">
-            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-          </scg:Dictionary>
-        </sap:WorkflowViewStateService.ViewState>
-        <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_21">
-          <Assign.To>
-            <OutArgument x:TypeArguments="x:Object">[dr_invoice(dt_invoice_main.Columns(loop_count).ColumnName)]</OutArgument>
-          </Assign.To>
-          <Assign.Value>
-            <InArgument x:TypeArguments="njl:JToken">[l_json_item("words_result")(dic_invoice(dt_invoice_main.Columns(loop_count).ColumnName))]</InArgument>
-          </Assign.Value>
-        </Assign>
-        <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_19">
-          <Assign.To>
-            <OutArgument x:TypeArguments="x:Int32">[loop_count]</OutArgument>
-          </Assign.To>
-          <Assign.Value>
-            <InArgument x:TypeArguments="x:Int32">[loop_count + 1]</InArgument>
-          </Assign.Value>
-        </Assign>
-      </Sequence>
-    </While>
-    <If sap2010:Annotation.AnnotationText="1.XLS 发票项目模板是否可以配置&#xD;&#xA;2.#params ： invoice_item_array -&gt; XLS 发票项目抽取" Condition="[invoice_item_array.Length &gt; 0]" DisplayName="判断  是否有发票项目  整理" sap:VirtualizedContainerService.HintSize="648,1681" sap2010:WorkflowViewState.IdRef="If_1">
-      <sap:WorkflowViewStateService.ViewState>
-        <scg:Dictionary x:TypeArguments="x:String, x:Object">
-          <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
-        </scg:Dictionary>
-      </sap:WorkflowViewStateService.ViewState>
+    <ui:DeserializeJson x:TypeArguments="njl:JObject" DisplayName="反序列化 一张发票 数据 " sap:VirtualizedContainerService.HintSize="655,61" sap2010:WorkflowViewState.IdRef="DeserializeJson`1_2" JsonObject="[l_json_item]" JsonString="[in_json_item]" />
+    <If Condition="[l_json_item.Property(&quot;error_code&quot;) Is Nothing]" DisplayName="IF条件" sap:VirtualizedContainerService.HintSize="655,752" sap2010:WorkflowViewState.IdRef="If_4">
       <If.Then>
-        <Sequence DisplayName="序列" sap:VirtualizedContainerService.HintSize="503,1482" sap2010:WorkflowViewState.IdRef="Sequence_10">
+        <Sequence DisplayName="序列" sap:VirtualizedContainerService.HintSize="305,599" sap2010:WorkflowViewState.IdRef="Sequence_21">
           <sap:WorkflowViewStateService.ViewState>
             <scg:Dictionary x:TypeArguments="x:String, x:Object">
               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-              <x:Boolean x:Key="IsPinned">False</x:Boolean>
             </scg:Dictionary>
           </sap:WorkflowViewStateService.ViewState>
-          <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" sap2010:Annotation.AnnotationText="1.循环要添加的模型&#xD;&#xA;2.invoice_item_array -&gt;  发票XLS项目表头项目&#xD;&#xA;3.dic_invoice_item -&gt; 发票 项目对应表&#xD;&#xA;&#xD;&#xA;//循环 导出模板表头生成 DrROW[]" DisplayName="遍历循环" sap:VirtualizedContainerService.HintSize="461,1251" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[invoice_item_array]">
-            <ui:ForEach.Body>
-              <ActivityAction x:TypeArguments="x:String">
-                <ActivityAction.Argument>
-                  <DelegateInArgument x:TypeArguments="x:String" Name="item_String" />
-                </ActivityAction.Argument>
-                <Sequence DisplayName="正文" sap:VirtualizedContainerService.HintSize="425,1017" sap2010:WorkflowViewState.IdRef="Sequence_11">
-                  <Sequence.Variables>
-                    <Variable x:TypeArguments="njl:JArray" Name="item_json_array" />
-                    <Variable x:TypeArguments="x:Int32" Name="index_invoice_item" />
-                  </Sequence.Variables>
-                  <sap:WorkflowViewStateService.ViewState>
-                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                    </scg:Dictionary>
-                  </sap:WorkflowViewStateService.ViewState>
-                  <ui:DeserializeJsonArray DisplayName="反序列化 JSON 数组" sap:VirtualizedContainerService.HintSize="383,61" sap2010:WorkflowViewState.IdRef="DeserializeJsonArray_1" JsonArray="[item_json_array]" JsonString="[l_json_item(&quot;words_result&quot;)(dic_invoice_item(item_String)).ToString]" />
-                  <If sap2010:Annotation.AnnotationText="1.发票项目没有初始化的时候初始化" Condition="[dr_invoice_item_array Is Nothing]" DisplayName="IF条件初始化 第一次" sap:VirtualizedContainerService.HintSize="383,99" sap2010:WorkflowViewState.IdRef="If_3">
-                    <sap:WorkflowViewStateService.ViewState>
-                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
-                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
-                        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
-                      </scg:Dictionary>
-                    </sap:WorkflowViewStateService.ViewState>
-                    <If.Then>
-                      <Sequence DisplayName="序列" sap:VirtualizedContainerService.HintSize="305,347" sap2010:WorkflowViewState.IdRef="Sequence_13">
+          <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_36">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[out_passing_success]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">True</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_3">
+            <Assign.To>
+              <OutArgument x:TypeArguments="sd:DataRow">[dr_invoice]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="sd:DataRow">[dt_invoice_main.NewRow]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <While DisplayName="循环 渲染 发票基本项目" sap:VirtualizedContainerService.HintSize="263,53" sap2010:WorkflowViewState.IdRef="While_1">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <While.Condition>[loop_count &lt; dt_invoice_main.Columns.Count]</While.Condition>
+            <Sequence DisplayName="序列" sap:VirtualizedContainerService.HintSize="305,254" sap2010:WorkflowViewState.IdRef="Sequence_9">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_21">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Object">[dr_invoice(dt_invoice_main.Columns(loop_count).ColumnName)]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="njl:JToken">[l_json_item("words_result")(dic_invoice(dt_invoice_main.Columns(loop_count).ColumnName))]</InArgument>
+                </Assign.Value>
+              </Assign>
+              <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_19">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:Int32">[loop_count]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:Int32">[loop_count + 1]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </Sequence>
+          </While>
+          <If sap2010:Annotation.AnnotationText="1.XLS 发票项目模板是否可以配置&#xA;2.#params ： invoice_item_array -&gt; XLS 发票项目抽取" Condition="[invoice_item_array.Length &gt; 0]" DisplayName="判断  是否有发票项目  整理" sap:VirtualizedContainerService.HintSize="263,150" sap2010:WorkflowViewState.IdRef="If_1">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <If.Then>
+              <Sequence DisplayName="序列" sap:VirtualizedContainerService.HintSize="503,1482" sap2010:WorkflowViewState.IdRef="Sequence_10">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <ui:ForEach x:TypeArguments="x:String" CurrentIndex="{x:Null}" sap2010:Annotation.AnnotationText="1.循环要添加的模型&#xA;2.invoice_item_array -&gt;  发票XLS项目表头项目&#xA;3.dic_invoice_item -&gt; 发票 项目对应表&#xA;&#xA;//循环 导出模板表头生成 DrROW[]" DisplayName="遍历循环" sap:VirtualizedContainerService.HintSize="461,1251" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[invoice_item_array]">
+                  <ui:ForEach.Body>
+                    <ActivityAction x:TypeArguments="x:String">
+                      <ActivityAction.Argument>
+                        <DelegateInArgument x:TypeArguments="x:String" Name="item_String" />
+                      </ActivityAction.Argument>
+                      <Sequence DisplayName="正文" sap:VirtualizedContainerService.HintSize="425,1017" sap2010:WorkflowViewState.IdRef="Sequence_11">
                         <Sequence.Variables>
-                          <Variable x:TypeArguments="x:Int32" Default="0" Name="index_item" />
+                          <Variable x:TypeArguments="njl:JArray" Name="item_json_array" />
+                          <Variable x:TypeArguments="x:Int32" Name="index_invoice_item" />
                         </Sequence.Variables>
                         <sap:WorkflowViewStateService.ViewState>
                           <scg:Dictionary x:TypeArguments="x:String, x:Object">
                             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                           </scg:Dictionary>
                         </sap:WorkflowViewStateService.ViewState>
-                        <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_23">
-                          <Assign.To>
-                            <OutArgument x:TypeArguments="sd:DataRow[]">[dr_invoice_item_array]</OutArgument>
-                          </Assign.To>
-                          <Assign.Value>
-                            <InArgument x:TypeArguments="sd:DataRow[]">[new DataRow(item_json_array.Count-1){}]</InArgument>
-                          </Assign.Value>
-                        </Assign>
-                        <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_26">
-                          <Assign.To>
-                            <OutArgument x:TypeArguments="x:Int32">[index_item]</OutArgument>
-                          </Assign.To>
-                          <Assign.Value>
-                            <InArgument x:TypeArguments="x:Int32">0</InArgument>
-                          </Assign.Value>
-                        </Assign>
-                        <While DisplayName="先条件循环" sap:VirtualizedContainerService.HintSize="263,53" sap2010:WorkflowViewState.IdRef="While_2">
+                        <ui:DeserializeJsonArray DisplayName="反序列化 JSON 数组" sap:VirtualizedContainerService.HintSize="383,61" sap2010:WorkflowViewState.IdRef="DeserializeJsonArray_1" JsonArray="[item_json_array]" JsonString="[l_json_item(&quot;words_result&quot;)(dic_invoice_item(item_String)).ToString]" />
+                        <If sap2010:Annotation.AnnotationText="1.发票项目没有初始化的时候初始化" Condition="[dr_invoice_item_array Is Nothing]" DisplayName="IF条件初始化 第一次" sap:VirtualizedContainerService.HintSize="383,99" sap2010:WorkflowViewState.IdRef="If_3">
                           <sap:WorkflowViewStateService.ViewState>
                             <scg:Dictionary x:TypeArguments="x:String, x:Object">
                               <x:Boolean x:Key="IsExpanded">False</x:Boolean>
                               <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                              <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
                             </scg:Dictionary>
                           </sap:WorkflowViewStateService.ViewState>
-                          <While.Condition>[index_item &lt; item_json_array.Count]</While.Condition>
-                          <Sequence DisplayName="序列" sap:VirtualizedContainerService.HintSize="305,254" sap2010:WorkflowViewState.IdRef="Sequence_16">
-                            <sap:WorkflowViewStateService.ViewState>
-                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                              </scg:Dictionary>
-                            </sap:WorkflowViewStateService.ViewState>
-                            <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_27">
-                              <Assign.To>
-                                <OutArgument x:TypeArguments="sd:DataRow">[dr_invoice_item_array(index_item)]</OutArgument>
-                              </Assign.To>
-                              <Assign.Value>
-                                <InArgument x:TypeArguments="sd:DataRow">[dt_invoice_item.NewRow]</InArgument>
-                              </Assign.Value>
-                            </Assign>
-                            <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_28">
-                              <Assign.To>
-                                <OutArgument x:TypeArguments="x:Int32">[index_item]</OutArgument>
-                              </Assign.To>
-                              <Assign.Value>
-                                <InArgument x:TypeArguments="x:Int32">[index_item +1]</InArgument>
-                              </Assign.Value>
-                            </Assign>
-                          </Sequence>
-                        </While>
+                          <If.Then>
+                            <Sequence DisplayName="序列" sap:VirtualizedContainerService.HintSize="305,347" sap2010:WorkflowViewState.IdRef="Sequence_13">
+                              <Sequence.Variables>
+                                <Variable x:TypeArguments="x:Int32" Default="0" Name="index_item" />
+                              </Sequence.Variables>
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_23">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="sd:DataRow[]">[dr_invoice_item_array]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="sd:DataRow[]">[new DataRow(item_json_array.Count-1){}]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                              <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_26">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:Int32">[index_item]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:Int32">0</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                              <While DisplayName="先条件循环" sap:VirtualizedContainerService.HintSize="263,53" sap2010:WorkflowViewState.IdRef="While_2">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <While.Condition>[index_item &lt; item_json_array.Count]</While.Condition>
+                                <Sequence DisplayName="序列" sap:VirtualizedContainerService.HintSize="305,254" sap2010:WorkflowViewState.IdRef="Sequence_16">
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                  <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_27">
+                                    <Assign.To>
+                                      <OutArgument x:TypeArguments="sd:DataRow">[dr_invoice_item_array(index_item)]</OutArgument>
+                                    </Assign.To>
+                                    <Assign.Value>
+                                      <InArgument x:TypeArguments="sd:DataRow">[dt_invoice_item.NewRow]</InArgument>
+                                    </Assign.Value>
+                                  </Assign>
+                                  <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_28">
+                                    <Assign.To>
+                                      <OutArgument x:TypeArguments="x:Int32">[index_item]</OutArgument>
+                                    </Assign.To>
+                                    <Assign.Value>
+                                      <InArgument x:TypeArguments="x:Int32">[index_item +1]</InArgument>
+                                    </Assign.Value>
+                                  </Assign>
+                                </Sequence>
+                              </While>
+                            </Sequence>
+                          </If.Then>
+                        </If>
+                        <Sequence DisplayName="添加相关数据" sap:VirtualizedContainerService.HintSize="383,685" sap2010:WorkflowViewState.IdRef="Sequence_19">
+                          <Sequence.Variables>
+                            <Variable x:TypeArguments="x:Int32" Default="0" Name="indexloop2" />
+                          </Sequence.Variables>
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <ui:ForEach x:TypeArguments="sd:DataRow" CurrentIndex="{x:Null}" DisplayName="遍历循环" sap:VirtualizedContainerService.HintSize="341,593" sap2010:WorkflowViewState.IdRef="ForEach`1_4" Values="[dr_invoice_item_array]">
+                            <ui:ForEach.Body>
+                              <ActivityAction x:TypeArguments="sd:DataRow">
+                                <ActivityAction.Argument>
+                                  <DelegateInArgument x:TypeArguments="sd:DataRow" Name="item" />
+                                </ActivityAction.Argument>
+                                <Sequence DisplayName="正文" sap:VirtualizedContainerService.HintSize="305,456" sap2010:WorkflowViewState.IdRef="Sequence_18">
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                  <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_30">
+                                    <Assign.To>
+                                      <OutArgument x:TypeArguments="x:Object">[item("发票代码")]</OutArgument>
+                                    </Assign.To>
+                                    <Assign.Value>
+                                      <InArgument x:TypeArguments="x:Object">[dr_invoice("发票代码")]</InArgument>
+                                    </Assign.Value>
+                                  </Assign>
+                                  <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_31">
+                                    <Assign.To>
+                                      <OutArgument x:TypeArguments="x:Object">[item("发票号码")]</OutArgument>
+                                    </Assign.To>
+                                    <Assign.Value>
+                                      <InArgument x:TypeArguments="x:Object">[dr_invoice("发票号码")]</InArgument>
+                                    </Assign.Value>
+                                  </Assign>
+                                  <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_33">
+                                    <Assign.To>
+                                      <OutArgument x:TypeArguments="x:Object">[item(item_string)]</OutArgument>
+                                    </Assign.To>
+                                    <Assign.Value>
+                                      <InArgument x:TypeArguments="x:Object">[item_json_array(indexloop2)("word").ToString]</InArgument>
+                                    </Assign.Value>
+                                  </Assign>
+                                  <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_34">
+                                    <Assign.To>
+                                      <OutArgument x:TypeArguments="x:Int32">[indexloop2]</OutArgument>
+                                    </Assign.To>
+                                    <Assign.Value>
+                                      <InArgument x:TypeArguments="x:Int32">[indexloop2 + 1]</InArgument>
+                                    </Assign.Value>
+                                  </Assign>
+                                </Sequence>
+                              </ActivityAction>
+                            </ui:ForEach.Body>
+                          </ui:ForEach>
+                        </Sequence>
                       </Sequence>
-                    </If.Then>
-                  </If>
-                  <Sequence DisplayName="添加相关数据" sap:VirtualizedContainerService.HintSize="383,685" sap2010:WorkflowViewState.IdRef="Sequence_19">
-                    <Sequence.Variables>
-                      <Variable x:TypeArguments="x:Int32" Default="0" Name="indexloop2" />
-                    </Sequence.Variables>
-                    <sap:WorkflowViewStateService.ViewState>
-                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
-                      </scg:Dictionary>
-                    </sap:WorkflowViewStateService.ViewState>
-                    <ui:ForEach x:TypeArguments="sd:DataRow" CurrentIndex="{x:Null}" DisplayName="遍历循环" sap:VirtualizedContainerService.HintSize="341,593" sap2010:WorkflowViewState.IdRef="ForEach`1_4" Values="[dr_invoice_item_array]">
-                      <ui:ForEach.Body>
-                        <ActivityAction x:TypeArguments="sd:DataRow">
-                          <ActivityAction.Argument>
-                            <DelegateInArgument x:TypeArguments="sd:DataRow" Name="item" />
-                          </ActivityAction.Argument>
-                          <Sequence DisplayName="正文" sap:VirtualizedContainerService.HintSize="305,456" sap2010:WorkflowViewState.IdRef="Sequence_18">
-                            <sap:WorkflowViewStateService.ViewState>
-                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                              </scg:Dictionary>
-                            </sap:WorkflowViewStateService.ViewState>
-                            <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_30">
-                              <Assign.To>
-                                <OutArgument x:TypeArguments="x:Object">[item("发票代码")]</OutArgument>
-                              </Assign.To>
-                              <Assign.Value>
-                                <InArgument x:TypeArguments="x:Object">[dr_invoice("发票代码")]</InArgument>
-                              </Assign.Value>
-                            </Assign>
-                            <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_31">
-                              <Assign.To>
-                                <OutArgument x:TypeArguments="x:Object">[item("发票号码")]</OutArgument>
-                              </Assign.To>
-                              <Assign.Value>
-                                <InArgument x:TypeArguments="x:Object">[dr_invoice("发票号码")]</InArgument>
-                              </Assign.Value>
-                            </Assign>
-                            <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_33">
-                              <Assign.To>
-                                <OutArgument x:TypeArguments="x:Object">[item(item_string)]</OutArgument>
-                              </Assign.To>
-                              <Assign.Value>
-                                <InArgument x:TypeArguments="x:Object">[item_json_array(indexloop2)("word").ToString]</InArgument>
-                              </Assign.Value>
-                            </Assign>
-                            <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_34">
-                              <Assign.To>
-                                <OutArgument x:TypeArguments="x:Int32">[indexloop2]</OutArgument>
-                              </Assign.To>
-                              <Assign.Value>
-                                <InArgument x:TypeArguments="x:Int32">[indexloop2 + 1]</InArgument>
-                              </Assign.Value>
-                            </Assign>
-                          </Sequence>
-                        </ActivityAction>
-                      </ui:ForEach.Body>
-                    </ui:ForEach>
-                  </Sequence>
+                    </ActivityAction>
+                  </ui:ForEach.Body>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </ui:ForEach>
+                <Sequence sap2010:Annotation.AnnotationText="1.上面生成的DR 添加到DT" DisplayName="序列 生成项目DT" sap:VirtualizedContainerService.HintSize="461,99" sap2010:WorkflowViewState.IdRef="Sequence_17">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <ui:ForEach x:TypeArguments="sd:DataRow" CurrentIndex="{x:Null}" DisplayName="遍历循环" sap:VirtualizedContainerService.HintSize="327,251" sap2010:WorkflowViewState.IdRef="ForEach`1_5" Values="[dr_invoice_item_array]">
+                    <ui:ForEach.Body>
+                      <ActivityAction x:TypeArguments="sd:DataRow">
+                        <ActivityAction.Argument>
+                          <DelegateInArgument x:TypeArguments="sd:DataRow" Name="item" />
+                        </ActivityAction.Argument>
+                        <Sequence DisplayName="正文" sap:VirtualizedContainerService.HintSize="242,114" sap2010:WorkflowViewState.IdRef="Sequence_20">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <ui:AddDataRow ArrayRow="{x:Null}" DataRow="[item]" DataTable="[dt_invoice_item]" DisplayName="添加数据行" sap:VirtualizedContainerService.HintSize="200,22" sap2010:WorkflowViewState.IdRef="AddDataRow_2" />
+                        </Sequence>
+                      </ActivityAction>
+                    </ui:ForEach.Body>
+                  </ui:ForEach>
                 </Sequence>
-              </ActivityAction>
-            </ui:ForEach.Body>
-            <sap:WorkflowViewStateService.ViewState>
-              <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
-                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                <x:Boolean x:Key="IsPinned">False</x:Boolean>
-              </scg:Dictionary>
-            </sap:WorkflowViewStateService.ViewState>
-          </ui:ForEach>
-          <Sequence sap2010:Annotation.AnnotationText="1.上面生成的DR 添加到DT" DisplayName="序列 生成项目DT" sap:VirtualizedContainerService.HintSize="461,99" sap2010:WorkflowViewState.IdRef="Sequence_17">
-            <sap:WorkflowViewStateService.ViewState>
-              <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
-                <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
-                <x:Boolean x:Key="IsPinned">False</x:Boolean>
-              </scg:Dictionary>
-            </sap:WorkflowViewStateService.ViewState>
-            <ui:ForEach x:TypeArguments="sd:DataRow" CurrentIndex="{x:Null}" DisplayName="遍历循环" sap:VirtualizedContainerService.HintSize="327,251" sap2010:WorkflowViewState.IdRef="ForEach`1_5" Values="[dr_invoice_item_array]">
-              <ui:ForEach.Body>
-                <ActivityAction x:TypeArguments="sd:DataRow">
-                  <ActivityAction.Argument>
-                    <DelegateInArgument x:TypeArguments="sd:DataRow" Name="item" />
-                  </ActivityAction.Argument>
-                  <Sequence DisplayName="正文" sap:VirtualizedContainerService.HintSize="242,114" sap2010:WorkflowViewState.IdRef="Sequence_20">
-                    <sap:WorkflowViewStateService.ViewState>
-                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
-                      </scg:Dictionary>
-                    </sap:WorkflowViewStateService.ViewState>
-                    <ui:AddDataRow ArrayRow="{x:Null}" DataRow="[item]" DataTable="[dt_invoice_item]" DisplayName="添加数据行" sap:VirtualizedContainerService.HintSize="200,22" sap2010:WorkflowViewState.IdRef="AddDataRow_2" />
-                  </Sequence>
-                </ActivityAction>
-              </ui:ForEach.Body>
-            </ui:ForEach>
-          </Sequence>
+              </Sequence>
+            </If.Then>
+          </If>
+          <ui:AddDataRow ArrayRow="{x:Null}" DataRow="[dr_invoice]" DataTable="[dt_invoice_main]" DisplayName="添加数据行" sap:VirtualizedContainerService.HintSize="263,22" sap2010:WorkflowViewState.IdRef="AddDataRow_1" />
         </Sequence>
       </If.Then>
+      <If.Else>
+        <Sequence DisplayName="序列" sap:VirtualizedContainerService.HintSize="305,153" sap2010:WorkflowViewState.IdRef="Sequence_22">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign DisplayName="分配" sap:VirtualizedContainerService.HintSize="263,61" sap2010:WorkflowViewState.IdRef="Assign_35">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Boolean">[out_passing_success]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Boolean">False</InArgument>
+            </Assign.Value>
+          </Assign>
+        </Sequence>
+      </If.Else>
     </If>
-    <ui:AddDataRow ArrayRow="{x:Null}" DataRow="[dr_invoice]" DataTable="[dt_invoice_main]" DisplayName="添加数据行" sap:VirtualizedContainerService.HintSize="599,22" sap2010:WorkflowViewState.IdRef="AddDataRow_1" />
   </Sequence>
 </Activity>

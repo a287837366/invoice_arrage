@@ -3,7 +3,7 @@
   "description": "百度发票整理",
   "main": "Invoice_arrange.xaml",
   "dependencies": {
-    "JP_Baidu_AI": "[1.0.6]",
+    "JP_Baidu_AI": "[1.0.7]",
     "UiPath.Excel.Activities": "[2.8.0-preview]",
     "UiPath.Mail.Activities": "[1.8.0-preview]",
     "UiPath.System.Activities": "[19.12.0-preview]",

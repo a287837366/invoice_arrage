@@ -121,7 +121,7 @@
           "lib/Interop.Domino.dll": {}
         }
       },
-      "JP_Baidu_AI/1.0.6": {
+      "JP_Baidu_AI/1.0.7": {
         "type": "package",
         "dependencies": {
           "UiPath.Excel.Activities": "[2.8.0-preview]",
@@ -1110,13 +1110,13 @@
         "lib/Interop.Domino.dll"
       ]
     },
-    "JP_Baidu_AI/1.0.6": {
-      "sha512": "YDLk+PceIFXLs2VpAQBv2xjuLQapy4qYRfKy0G1fST/U07doZhYcsqWWNvtbkEulkLqx04EgiWBmGJdLmWetQg==",
+    "JP_Baidu_AI/1.0.7": {
+      "sha512": "9+ObMEEKWE3hZ1Z7Q104xvI030ATNUWulnEeSU05JCj62RQKwVhYf8hy/EddAxkJI4zJi/czBXVVDvXvBm0FEw==",
       "type": "package",
-      "path": "jp_baidu_ai/1.0.6",
+      "path": "jp_baidu_ai/1.0.7",
       "files": [
         ".nupkg.metadata",
-        "jp_baidu_ai.1.0.6.nupkg.sha512",
+        "jp_baidu_ai.1.0.7.nupkg.sha512",
         "jp_baidu_ai.nuspec",
         "lib/net45/.settings/Release/settings-1a5b880a.json",
         "lib/net45/.settings/Release/settings-5190454b.json",
@@ -1818,7 +1818,7 @@
   "projectFileDependencyGroups": {
     "": [],
     ".NETFramework,Version=v4.6.1": [
-      "JP_Baidu_AI >= 1.0.6 <= 1.0.6",
+      "JP_Baidu_AI >= 1.0.7 <= 1.0.7",
       "UiPath.Excel.Activities >= 2.8.0-preview <= 2.8.0-preview",
       "UiPath.Mail.Activities >= 1.8.0-preview <= 1.8.0-preview",
       "UiPath.System.Activities >= 19.12.0-preview <= 19.12.0-preview",
@@ -1833,9 +1833,9 @@
     "restore": {
       "projectUniqueName": "百度发票整理",
       "projectName": "百度发票整理",
-      "projectPath": "E:\\4.Source\\UiPath\\百度发票整理\\.local",
+      "projectPath": "E:\\4.Source\\GIT\\UiPath_invoice\\百度发票整理\\.local",
       "packagesPath": "C:\\Users\\18604\\.nuget\\packages\\",
-      "outputPath": "E:\\4.Source\\UiPath\\百度发票整理\\.local"
+      "outputPath": "E:\\4.Source\\GIT\\UiPath_invoice\\百度发票整理\\.local"
     },
     "frameworks": {
       "net461": {
@@ -1843,7 +1843,7 @@
           "JP_Baidu_AI": {
             "include": "Runtime",
             "target": "Package",
-            "version": "[1.0.6, 1.0.6]"
+            "version": "[1.0.7, 1.0.7]"
           },
           "UiPath.Excel.Activities": {
             "include": "Runtime",
